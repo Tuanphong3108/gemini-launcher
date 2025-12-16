@@ -1,122 +1,86 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>AI Mode Initializing</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Gemini</title>
+    <!-- Thư viện Tailwind CSS để dễ dàng styling và responsive -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        /* Định nghĩa font Google Sans đã được Phong cung cấp */
+        @font-face {
+            font-family: 'Google Sans';
+            src: url('https://tuanphong3108.github.io/google-sans-do-not-access/GoogleSans-Regular.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'Google Sans';
+            src: url('https://tuanphong3108.github.io/google-sans-do-not-access/GoogleSans-Bold.ttf') format('truetype');
+            font-weight: bold;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'Google Sans';
+            src: url('https://tuanphong3108.github.io/google-sans-do-not-access/GoogleSans-Italic.ttf') format('truetype');
+            font-weight: normal;
+            font-style: italic;
+        }
         body {
-            font-family: 'Google Sans Regular', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #1A1A1A; /* NỀN TỐI */
-            color: #FFFFFF; /* CHỮ TRẮNG TINH KHIẾT */
-            display: flex;
-            flex-direction: column; 
-            justify-content: center;
-            align-items: center;
+            /* Sử dụng font Google Sans */
+            font-family: 'Google Sans', sans-serif;
+            /* Thiết lập màn hình full-height và căn giữa nội dung */
             height: 100vh;
             margin: 0;
-            overflow: hidden;
-            transition: opacity 0.5s ease;
+            background-color: #f7f7f7; /* Nền trắng xám */
         }
 
-        /* Định nghĩa 4 màu Google */
-        .color-blue { background-color: #4285F4; } /* Xanh Dương */
-        .color-red { background-color: #DB4437; }  /* Đỏ */
-        .color-yellow { background-color: #F4B400; } /* Vàng */
-        .color-green { background-color: #0F9D58; } /* Xanh Lá */
+        /* Animation cho logo: mờ dần và rung lắc nhẹ */
+        @keyframes fadeInScale {
+            0% { opacity: 0; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
+        }
 
         .logo-container {
-            position: relative; /* Quan trọng để các chấm xoay quanh nó */
-            margin-bottom: 20px; /* Khoảng cách giữa logo và chữ */
-            opacity: 0;
-            animation: fadeIn 0.8s ease-in forwards;
-            animation-delay: 0.2s;
-            /* Thiết lập kích thước để các chấm xoay có không gian */
-            width: 300px;
-            height: 300px;
-        }
-
-        .gemini-logo {
-            /* Logo PNG đã cắt nền */
-            width: 120px; 
-            height: auto; 
-            display: block; 
-            margin: auto;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%); /* Căn giữa hoàn hảo */
-            z-index: 2; /* Đảm bảo logo nằm trên các chấm xoay */
-        }
-
-        /* Các chấm xoay */
-        .spinner-dot {
-            position: absolute;
-            width: 15px; /* Tăng kích thước chấm */
-            height: 15px;
-            border-radius: 50%; /* Hình tròn */
-            transform-origin: 50% 50%; /* Tâm của chấm */
-            opacity: 0.9;
-        }
-
-        /* Vị trí ban đầu của các chấm (Căn ở giữa container) */
-        .dot-1 { top: 50%; left: 50%; margin: -7.5px; animation: orbit 4s linear infinite; animation-delay: 0s; }
-        .dot-2 { top: 50%; left: 50%; margin: -7.5px; animation: orbit 4s linear infinite; animation-delay: -1s; } 
-        .dot-3 { top: 50%; left: 50%; margin: -7.5px; animation: orbit 4s linear infinite; animation-delay: -2s; }
-        .dot-4 { top: 50%; left: 50%; margin: -7.5px; animation: orbit 4s linear infinite; animation-delay: -3s; }
-
-        @keyframes orbit {
-            0%   { transform: translate(-50%, -50%) rotate(0deg) translateX(100px) scale(1); }
-            50%  { transform: translate(-50%, -50%) rotate(180deg) translateX(80px) scale(0.8); } /* Hơi co lại ở giữa */
-            100% { transform: translate(-50%, -50%) rotate(360deg) translateX(100px) scale(1); }
-        }
-
-        .message {
-            font-size: 3rem; 
-            font-weight: 500;
-            letter-spacing: 0.2rem;
-            opacity: 0;
-            animation: fadeIn 0.8s ease-in forwards;
-            animation-delay: 0.5s; /* Hiện chữ sau logo */
-            text-shadow: 0 0 10px rgba(66, 133, 244, 0.5);
-        }
-        .instruction {
-            position: absolute;
-            bottom: 30px; 
-            font-family: 'Google Sans Regular', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-size: 1.1rem; 
-            font-weight: 300;
-            font-style: italic; 
-            color: #FFFFFF; 
-            opacity: 0.3; 
-            animation: fadeIn 0.8s ease-in forwards;
-            animation-delay: 0.8s; 
-        }
-        @keyframes fadeIn {
-            to { opacity: 1; }
+            animation: fadeInScale 0.7s ease-out forwards;
         }
     </style>
 </head>
-<body>
-    <div class="logo-container">
-        <!-- Logo Gemini: Dùng URL mới của Phong (PNG đã cắt nền) -->
-        <img src="https://tuanphong3108.github.io/gemini-launcher/PhotoshopExtension_Image.png" alt="Gemini Logo" class="gemini-logo">
-        
-        <!-- Các chấm xoay Google Hóa -->
-        <div class="spinner-dot dot-1 color-blue"></div>
-        <div class="spinner-dot dot-2 color-red"></div>
-        <div class="spinner-dot dot-3 color-yellow"></div>
-        <div class="spinner-dot dot-4 color-green"></div>
-    </div>
-    <div class="message">ENTERING AI MODE...</div>
-    <div class="instruction">Nhấn Alt + F4 để thoát chế độ AI Mode</div>
+<body class="flex items-center justify-center p-4">
 
+    <!-- Container chính giữa màn hình -->
+    <div class="logo-container flex flex-col items-center justify-center text-center">
+        <!-- Logo của Phong -->
+        <img 
+            src="https://tuanphong3108.github.io/gemini-launcher/PhotoshopExtension_Image.png" 
+            alt="Đang khởi động hệ thống Gemini" 
+            class="w-48 h-48 md:w-64 md:h-64 rounded-xl shadow-2xl transition duration-300 hover:scale-105"
+        >
+        
+        <!-- Hiệu ứng tải -->
+        <div class="mt-8 text-lg text-gray-700 font-bold tracking-wider">
+            ĐANG CHUYỂN HƯỚNG ĐẾN GEMINI
+        </div>
+        <div class="mt-3 w-40 h-2 bg-gray-200 rounded-full overflow-hidden">
+            <div id="progress-bar" class="h-full bg-blue-500 rounded-full" style="width: 0%; transition: width 1s linear;"></div>
+        </div>
+    </div>
+
+    <!-- Script xử lý chuyển hướng -->
     <script>
-        // <<< CHUYỂN HƯỚNG TỰ ĐỘNG SAU 5 GIÂY BẰNG JAVASCRIPT >>>
-        console.log("Setting up 5 second redirect to Gemini...");
+        // Lấy thanh tiến trình
+        const progressBar = document.getElementById('progress-bar');
+        
+        // Thiết lập thanh tiến trình chạy 100% trong 1 giây
+        progressBar.style.width = '100%';
+
+        // Chuyển hướng sau 1000 mili giây (1 giây)
         setTimeout(() => {
-            // Dùng window.location.href để chuyển hướng nội bộ trong WebView2
-            window.location.href = 'https://gemini.google.com';
-        }, 5000); // 5000ms = 5 giây
+            console.log("Đã hết 1 giây. Triển khai chuyển hướng!");
+            // Đảm bảo URL chính xác
+            window.location.href = "https://gemini.google.com";
+        }, 2000); // 1000ms = 1 giây
     </script>
+
 </body>
 </html>
