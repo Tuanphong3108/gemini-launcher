@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đang tải dữ liệu...</title>
+    
+    <!-- Import Google Fonts & Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Icon Material Symbols: 'progress_activity' cho loading -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+    <style>
+        /* Font Minecraft theo yêu cầu của bro */
+        @font-face {
+            font-family: 'Minecraft';
+            src: url('https://tuanphong3108.github.io/google-sans-do-not-access/minecraft.tff') format('truetype');
+            font-weight: normal; 
+            font-style: normal;
+        }
+
+        body {
+            /* Full màn hình, Dark Mode */
+            background-color: #1a1a1a; 
+            color: #e0e0e0;
+            font-family: 'Google Sans Flex', sans-serif;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh; /* Chiếm trọn chiều cao viewport */
+            width: 100vw;  /* Chiếm trọn chiều rộng viewport */
+            overflow: hidden;
+            text-align: center;
+        }
+
+        /* Container để đặt icon và text cạnh nhau (flex ngang) */
+        .loading-content {
+            display: flex;
+            align-items: center; /* Căn giữa dọc giữa icon và chữ */
+            gap: 15px; /* Khoảng cách giữa icon và chữ */
+            padding: 20px; /* Thêm padding nhẹ cho mobile */
+        }
+        
+        /* Hiệu ứng xoay và đổi màu RGB cho icon */
+        .loading-icon {
+            font-size: 64px;
+            /* Hai animation chạy đồng thời: spin và color-cycle */
+            animation: spin 1.5s linear infinite, color-cycle 8s linear infinite; 
+            display: inline-block;
+            user-select: none;
+            /* Text shadow trắng nhẹ để icon nổi bật trên nền tối */
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.4); 
+        }
+
+        /* Keyframes cho hiệu ứng đổi màu (Blue, Yellow, Green, Red) */
+        @keyframes color-cycle {
+            0%   { color: #3498db; } /* Xanh biển (Blue) */
+            25%  { color: #f1c40f; } /* Vàng (Yellow) */
+            50%  { color: #2ecc71; } /* Xanh lá (Green) */
+            75%  { color: #e74c3c; } /* Đỏ (Red) */
+            100% { color: #3498db; } /* Lặp lại Xanh biển */
+        }
+
+        /* Material Symbols FILL on hover: Giữ nguyên logic hover */
+        .loading-icon:hover {
+            font-variation-settings: 'FILL' 1;
+            /* Dùng màu trắng khi hover để đảm bảo nổi bật không bị lẫn với màu đang cycling */
+            color: #ffffff; 
+            cursor: wait;
+        }
+
+        .status-text {
+            font-size: 1.4rem;
+            font-weight: 400;
+            letter-spacing: 1px;
+            color: #ffffff;
+            /* Hiệu ứng nhấp nháy (pulse) cho chữ */
+            animation: pulse 2s infinite alternate;
+        }
+
+        /* Keyframes cho hiệu ứng xoay */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Keyframes cho hiệu ứng nhấp nháy của chữ */
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            100% { opacity: 1.0; }
+        }
+        
+        /* Đã gỡ bỏ CSS cho .dots và @keyframes dots */
+
+        /* Media Query cho mobile: Giữ nguyên responsiveness */
+        @media (max-width: 600px) {
+            .loading-content {
+                gap: 10px;
+                flex-direction: column; /* Chuyển về stack dọc trên mobile để tiết kiệm không gian */
+            }
+            .loading-icon {
+                font-size: 50px;
+            }
+            .status-text {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Nội dung được căn giữa thẳng trên nền body -->
+    <div class="loading-content">
+        <!-- Icon Loading (vẫn có hiệu ứng RGB) -->
+        <span class="material-symbols-outlined loading-icon">
+            progress_activity
+        </span>
+        
+        <!-- Text thông báo đã có dấu 3 chấm tĩnh -->
+        <div class="status-text">
+            Đang lấy thông tin tài khoản...
+        </div>
+    </div>
+
+</body>
+</html>
