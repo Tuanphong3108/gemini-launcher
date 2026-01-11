@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- FIX 1: Đặt Title tab thành GOOGLE ESSENTIALS -->
+    <title>GOOGLE ESSENTIALS</title> 
+    
+    <!-- FIX 2: Thêm Favicon từ repo của Phong -->
+    <link rel="icon" type="image/png" href="https://tuanphong3108.github.io/gemini-launcher/Google_Favicon_2025.svg.png">
+    
+    <!-- Import Google Sans Flex & Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+    
+    <style>
+        /* Tải font Minecraft từ URL bên ngoài (Đây là link font) */
+        @font-face {
+            font-family: 'Minecraft';
+            src: url('https://tuanphong3108.github.io/google-sans-do-not-access/minecraft.tff') format('truetype');
+            font-weight: normal; 
+            font-style: normal;
+        }
+
+        :root {
+            /* --- Bảng Màu M3 Expressive (Tông Sáng) --- */
+            --bg-color: #F0F4F9; /* Nền ngoài: Xanh xám nhạt */
+            --card-bg: #FFFFFF; /* Nền container: Trắng tinh */
+            --mc-green: #00796B; /* Deep Teal: Màu chủ đạo cho tiêu đề */
+            --google-blue: #4285F4; /* Google Blue: Màu nhấn */
+            --text-color: #212121; /* Text tối */
+            --footer-color: #757575; /* Màu chữ footer */
+            --border-light: #E0E0E0;
+            
+            /* Màu Scrollbar (Fluent UI-style) */
+            --scrollbar-thumb: rgba(0, 0, 0, 0.2); 
+            --scrollbar-thumb-hover: rgba(0, 0, 0, 0.35); 
+            --scrollbar-width: 8px;
+        }
+        
+        /* --- CUSTOM SCROLLBAR: PHONG CÁCH MICROSOFT FLUENT UI --- */
+        body::-webkit-scrollbar { width: var(--scrollbar-width); }
+        body::-webkit-scrollbar-track { background: var(--bg-color); }
+        body::-webkit-scrollbar-thumb {
+            background-color: var(--scrollbar-thumb);
+            border-radius: 10px;
+            border: 2px solid var(--bg-color);
+        }
+        body::-webkit-scrollbar-thumb:hover { background-color: var(--scrollbar-thumb-hover); }
+        /* --- END CUSTOM SCROLLBAR --- */
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Google Sans Flex', sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh; 
+            padding: 0; 
+            overflow: hidden; /* Mặc định ẩn scrollbar */
+        }
+
+        /* --- STYLES CHO LỚP PHỦ LOADING --- */
+        #loadingOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--card-bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 1;
+            /* Transition 1s cho fade out khi tải lần đầu */
+            transition: opacity 1s ease-out; 
+            visibility: visible;
+        }
+
+        #loadingOverlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        
+        #loadingIframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        /* --- END STYLES CHO LỚP PHỦ LOADING --- */
+
+        .container {
+            width: 100%;
+            min-height: 100vh;
+            background: var(--card-bg);
+            padding: 40px 60px;
+            border-radius: 0; 
+            box-shadow: none; 
+            border: none;
+            z-index: 10;
+            
+            /* Ẩn UI ban đầu */
+            opacity: 0;
+            visibility: hidden;
+            /* Dùng transition này cho cả lúc tải ban đầu và lúc fade out khi click */
+            transition: opacity 0.3s ease-in; 
+        }
+        
+        /* --- STYLES CHO CARD --- */
+        .app-card {
+            background: #F8F8F8;
+            padding: 20px 10px; 
+            border-radius: 16px;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            border: 1px solid var(--border-light);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            /* Bỏ các hiệu ứng Hyper-Jump cũ */
+            will-change: transform, box-shadow;
+            transform-origin: center center;
+        }
+        
+        .app-card:hover {
+            transform: translateY(-3px);
+            background: var(--card-bg);
+            border-color: var(--google-blue);
+            box-shadow: 0 6px 15px rgba(66, 133, 244, 0.3);
+        }
+
+        /* --- STYLES CHO HEADER VÀ ACCOUNT BUTTON --- */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: -50px;
+            padding-right: 0px; 
+            width: 100%;
+        }
+
+        .logo-img {
+            height: 30px;
+            width: 30px;
+            object-fit: contain;
+            border-radius: 50%;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+        
+        .logo-img:hover { transform: scale(1.1); }
+
+        .account-btn {
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background-color 0.2s, box-shadow 0.2s;
+            line-height: 1;
+        }
+
+        .account-btn:hover { background-color: rgba(66, 133, 244, 0.1); }
+        
+        .account-btn .material-symbols-outlined {
+            font-size: 30px;
+            margin: 0;
+            font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 48;
+            color: var(--text-color);
+        }
+
+        .account-btn:hover .material-symbols-outlined {
+            color: var(--google-blue);
+            font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 48;
+        }
+        /* --- END STYLES CHO HEADER VÀ ACCOUNT BUTTON --- */
+
+        h1 {
+            font-family: 'Minecraft', sans-serif;
+            color: var(--mc-green);
+            font-size: clamp(1.8rem, 5vw, 2.5rem); 
+            text-shadow: 2px 2px rgba(0,0,0,0.1); 
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .grid-apps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); 
+            gap: 20px;
+        }
+
+        /* Logic Material Symbols */
+        .material-symbols-outlined {
+            font-size: 40px;
+            margin-bottom: 10px;
+            transition: font-variation-settings 0.3s;
+            font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 48;
+            color: var(--text-color);
+        }
+        
+        .google-one-icon {
+            font-family: 'Google Sans Flex', sans-serif; 
+            font-size: 40px;
+            font-weight: 900; 
+            margin-bottom: 10px;
+            color: var(--text-color);
+            transition: color 0.3s;
+        }
+
+        .app-card:hover .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 48;
+            color: var(--google-blue);
+        }
+        
+        .app-card:hover .google-one-icon {
+            color: var(--google-blue);
+        }
+
+        .app-card p {
+            margin: 10px 0 0;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--footer-color);
+            padding-top: 20px;
+            border-top: 1px dashed var(--border-light);
+        }
+
+        /* Media Query cho Mobile */
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            .grid-apps {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .top-bar {
+                margin-bottom: -30px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- START: LỚP PHỦ LOADING TOÀN MÀN HÌNH -->
+<div id="loadingOverlay">
+    <iframe id="loadingIframe" 
+            src="https://tuanphong3108.github.io/gemini-launcher/loading.html" 
+            title="Loading Screen">
+    </iframe>
+</div>
+<!-- END: LỚP PHỦ LOADING TOÀN MÀN HÌNH -->
+
+<div class="container">
+    <header class="top-bar">
+        <img src="https://tuanphong3108.github.io/gemini-launcher/Google_Favicon_2025.svg.png" 
+             alt="Google Logo" 
+             class="logo-img" 
+             onerror="this.onerror=null; this.src='https://placehold.co/30x30/4285F4/FFFFFF?text=G'"
+             onclick="window.open('https://google.com/', '_blank');"
+        >
+        <div class="account-btn" onclick="window.open('https://myaccount.google.com/', '_blank');" title="Google Account Settings">
+            <span class="material-symbols-outlined">account_circle</span>
+        </div>
+    </header>
+
+    <h1>GOOGLE ESSENTIALS</h1>
+    <p style="text-align: center; color: var(--footer-color); margin-bottom: 25px; font-weight: 300;">Dashboard được độ lại theo phong cách Minecraft và Material 3 Light Mode cho Dell Latitude 3520.</p>
+    
+    <div class="grid-apps">
+        <div class="app-card" data-app="Play Games" data-url="https://play.google.com/googleplaygames">
+            <span class="material-symbols-outlined">sports_esports</span>
+            <p>Play Games</p>
+        </div>
+        <div class="app-card" data-app="Photos" data-url="https://photos.google.com/">
+            <span class="material-symbols-outlined">photo_library</span>
+            <p>Photos</p>
+        </div>
+        <div class="app-card" data-app="Drive" data-url="https://drive.google.com/">
+            <span class="material-symbols-outlined">cloud</span>
+            <p>Drive</p>
+        </div>
+        <div class="app-card" data-app="Messages" data-url="https://messages.google.com/">
+            <span class="material-symbols-outlined">chat</span>
+            <p>Messages</p>
+        </div>
+        <div class="app-card" data-app="Calendar" data-url="https://calendar.google.com/">
+            <span class="material-symbols-outlined">calendar_month</span>
+            <p>Calendar</p>
+        </div>
+        
+        <div class="app-card" data-app="Gmail" data-url="https://mail.google.com/">
+            <span class="material-symbols-outlined">mail</span>
+            <p>Gmail</p>
+        </div>
+
+        <div class="app-card" data-app="Google One" data-url="https://one.google.com/">
+            <span class="google-one-icon">1</span>
+            <p>Google One</p>
+        </div>
+        
+        <div class="app-card" data-app="Gemini" data-url="https://gemini.google.com/">
+            <span class="material-symbols-outlined">neurology</span>
+            <p>Gemini</p>
+        </div>
+        <div class="app-card" data-app="Home" data-url="https://home.google.com/">
+            <span class="material-symbols-outlined">home</span>
+            <p>Home</p>
+        </div>
+        <div class="app-card" data-app="YouTube" data-url="https://www.youtube.com/">
+            <span class="material-symbols-outlined">play_circle</span>
+            <p>YouTube</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        Cấu hình: Dell Latitude 3520 | Core i3 Gen 11 | Code by Your AI Bro 🤖
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const cards = document.querySelectorAll('.app-card');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const loadingIframe = document.getElementById('loadingIframe');
+        const container = document.querySelector('.container');
+        
+        // Cờ để đảm bảo chỉ chạy transition 1 lần
+        let isTransitioning = false; 
+
+        // Thêm cờ mới để phân biệt lần tải ban đầu và lần tải khi click
+        let isExiting = false; 
+
+        // Constants for timing
+        const initialLoadingDuration = 5000; // 5s cho lần tải đầu
+        const exitLoadingDuration = 2000;   // 2s cho lần click 
+        const fadeTransition = 300;         // 0.3s cho hiệu ứng fade của container (CSS: 0.3s)
+
+        // Hàm ẩn lớp phủ (Initial Load)
+        const hideInitialOverlay = () => {
+            // Ngăn không cho chạy nếu đang trong quá trình Exit
+            if (isExiting) return; 
+
+            // 1. Bắt đầu fade out overlay (CSS transition: 1s)
+            loadingOverlay.classList.add('hidden'); 
+
+            setTimeout(() => {
+                // 2. HIỆN container chính và bật scrollbar
+                container.style.opacity = '1';
+                container.style.visibility = 'visible';
+                document.body.style.overflowY = 'auto'; // BẬT SCROLLBAR cho dashboard
+                
+                // 3. Tắt iframe để tiết kiệm tài nguyên
+                loadingIframe.src = 'about:blank';
+                loadingIframe.style.display = 'none'; 
+                
+            }, 1000); // Chờ 1s để transition hoàn tất
+        };
+        
+        // Hàm xử lý việc mở link và reload sau khi loading xong (Exit Load)
+        const startExitCountdown = (appUrl) => {
+            // Bắt đầu đếm ngược 2 giây sau khi iframe đã load xong
+            setTimeout(() => {
+                // 1. Open the link in a new tab
+                window.open(appUrl, '_blank');
+                
+                // 2. Reload the current tab
+                location.reload(); 
+                
+            }, exitLoadingDuration); // 2000ms
+        };
+
+        // Iframe onload handler: Xử lý cả hai trường hợp
+        loadingIframe.onload = () => {
+            if (isExiting) {
+                // TRƯỜNG HỢP 2: Đang Exit/Click
+                const appUrl = loadingIframe.getAttribute('data-target-url');
+                if (appUrl) {
+                    startExitCountdown(appUrl);
+                    // Reset cờ để không ảnh hưởng đến lần tải ban đầu nếu user cố gắng click tiếp
+                    isExiting = false;
+                }
+            } else {
+                // TRƯỜNG HỢP 1: Tải lần đầu
+                setTimeout(() => {
+                    hideInitialOverlay();
+                }, initialLoadingDuration); 
+            }
+        };
+
+        // Fallback timer (Nếu iframe không load được) - Vẫn giữ để đảm bảo UI hiện ra
+        setTimeout(() => {
+            if (!isExiting && loadingOverlay && !loadingOverlay.classList.contains('hidden')) {
+                hideInitialOverlay();
+            }
+        }, initialLoadingDuration + 1000);
+
+
+        // Lắng nghe sự kiện click trên từng card (cho Exit/Reload)
+        cards.forEach(card => {
+            card.addEventListener('click', (e) => {
+                e.preventDefault(); 
+                if (isTransitioning) return; 
+                
+                const appUrl = card.getAttribute('data-url');
+                
+                if (appUrl) {
+                    isTransitioning = true; 
+                    isExiting = true; // Bật cờ Exit
+
+                    // Lưu URL vào iframe để sử dụng trong onload
+                    loadingIframe.setAttribute('data-target-url', appUrl); 
+                    
+                    // 1. Fade Out Dashboard và ẩn scrollbar
+                    container.style.opacity = '0';
+                    container.style.pointerEvents = 'none'; 
+                    document.body.style.overflowY = 'hidden'; 
+                    
+                    // 2. Chờ fade transition (0.3s)
+                    setTimeout(() => {
+                        // 3. Hiển thị lớp phủ loading và TẢI LẠI iframe
+                        loadingIframe.style.display = 'block'; 
+                        // Tải lại src để kích hoạt sự kiện onload mới
+                        loadingIframe.src = 'https://tuanphong3108.github.io/gemini-launcher/loading.html'; 
+                        loadingOverlay.classList.remove('hidden'); 
+                        
+                        // Bước tiếp theo được xử lý tự động trong loadingIframe.onload
+                        
+                    }, fadeTransition); 
+                }
+            });
+        });
+    });
+</script>
+
+</body>
+</html>
