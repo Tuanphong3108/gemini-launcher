@@ -2,7 +2,7 @@
   "name": "Roblox Player",
   "short_name": "Roblox",
   "description": "Roblox Player Engine for Windows",
-  "start_url": "loading_screen.html",
+  "start_url": "roblox.html",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#000000",
