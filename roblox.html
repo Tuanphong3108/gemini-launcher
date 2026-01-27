@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roblox Player</title>
+    
+    <!-- Import Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            background-color: #000;
+            font-family: 'Google Sans Flex', sans-serif;
+            color: white;
+        }
+
+        /* GIAI ĐOẠN 1: Màn hình lời xin lỗi */
+        #welcome-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            background-color: #000;
+            opacity: 0; 
+            transition: opacity 1.5s ease-in-out;
+        }
+
+        .welcome-text {
+            font-size: 3.5rem;
+            font-weight: 300;
+            letter-spacing: -1px;
+            filter: blur(5px);
+            transition: filter 2s ease;
+        }
+
+        /* GIAI ĐOẠN 2: Thông báo "Chốt hạ" */
+        #main-container {
+            opacity: 0;
+            display: none;
+            transition: opacity 2s ease-in-out;
+            height: 100%;
+            width: 100%;
+        }
+
+        .background-embed {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            z-index: 1;
+        }
+
+        .loading-overlay {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            width: 100vw;
+            background: rgba(0, 0, 0, 0.5); /* Tối hơn chút để chữ đỏ trông nghiêm trọng */
+        }
+
+        .status-text {
+            font-size: 1.8rem;
+            font-weight: 500;
+            text-shadow: 0 0 20px rgba(255, 77, 77, 0.5);
+            color: #ff4d4d; /* Màu đỏ cảnh báo */
+            text-align: center;
+            padding: 0 20px;
+            animation: text-pulse 3s infinite alternate;
+        }
+
+        /* Hiệu ứng nhịp thở nhẹ cho chữ */
+        @keyframes text-pulse {
+            0% { opacity: 0.9; transform: scale(0.99); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Helpers cho JS */
+        .show-welcome { opacity: 1 !important; }
+        .clear-blur { filter: blur(0px) !important; }
+        .fade-out { opacity: 0 !important; }
+        .show-main { display: block !important; }
+        .active-main { opacity: 1 !important; }
+    </style>
+</head>
+<body>
+
+    <!-- MÀN 1: XIN LỖI -->
+    <div id="welcome-screen">
+        <div class="welcome-text" id="txt">Xin lỗi</div>
+    </div>
+
+    <!-- MÀN 2: THÔNG BÁO KHÔNG KHẢ DỤNG -->
+    <div id="main-container">
+        <div id="iframe-target"></div>
+
+        <div class="loading-overlay">
+            <div class="status-text">
+                Roblox không còn khả dụng cho thiết bị này
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const welcome = document.getElementById('welcome-screen');
+        const main = document.getElementById('main-container');
+        const txt = document.getElementById('txt');
+        const iframeTarget = document.getElementById('iframe-target');
+
+        window.addEventListener('DOMContentLoaded', () => {
+            // 1. Hiện "Xin lỗi"
+            setTimeout(() => {
+                welcome.classList.add('show-welcome');
+                txt.classList.add('clear-blur');
+            }, 500);
+
+            // 2. Ẩn "Xin lỗi"
+            setTimeout(() => {
+                welcome.classList.add('fade-out');
+            }, 3500); 
+
+            // 3. Hiện thông báo cuối cùng với title giả lập
+            setTimeout(() => {
+                welcome.style.display = 'none';
+                
+                iframeTarget.innerHTML = `
+                    <iframe 
+                        src="https://tuanphong3108.github.io/newtab/FirstLogonAnim.html" 
+                        class="background-embed">
+                    </iframe>
+                `;
+                
+                main.classList.add('show-main');
+                
+                requestAnimationFrame(() => {
+                    setTimeout(() => {
+                        main.classList.add('active-main');
+                    }, 50);
+                });
+            }, 5100); 
+        });
+    </script>
+</body>
+</html>
