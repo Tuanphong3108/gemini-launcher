@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Roblox Player</title>
     
+    <!-- Favicon Roblox chính chủ từ thư mục -->
+    <link rel="icon" type="image/png" href="roblox.png">
+    
+    <!-- Link Manifest để giả lập ứng dụng thật -->
+    <link rel="manifest" href="manifest.json">
+    
     <!-- Import Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;700&display=swap" rel="stylesheet">
 
@@ -71,20 +77,19 @@
             justify-content: center;
             height: 100vh;
             width: 100vw;
-            background: rgba(0, 0, 0, 0.5); /* Tối hơn chút để chữ đỏ trông nghiêm trọng */
+            background: rgba(0, 0, 0, 0.5); 
         }
 
         .status-text {
             font-size: 1.8rem;
             font-weight: 500;
             text-shadow: 0 0 20px rgba(255, 77, 77, 0.5);
-            color: #ff4d4d; /* Màu đỏ cảnh báo */
+            color: #ff4d4d; 
             text-align: center;
             padding: 0 20px;
             animation: text-pulse 3s infinite alternate;
         }
 
-        /* Hiệu ứng nhịp thở nhẹ cho chữ */
         @keyframes text-pulse {
             0% { opacity: 0.9; transform: scale(0.99); }
             100% { opacity: 1; transform: scale(1); }
@@ -134,7 +139,7 @@
                 welcome.classList.add('fade-out');
             }, 3500); 
 
-            // 3. Hiện thông báo cuối cùng với title giả lập
+            // 3. Hiện thông báo cuối cùng
             setTimeout(() => {
                 welcome.style.display = 'none';
                 
